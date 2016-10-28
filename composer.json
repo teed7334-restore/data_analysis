@@ -1,0 +1,39 @@
+{
+	"description": "The CodeIgniter framework",
+	"name": "codeigniter/framework",
+	"type": "project",
+	"homepage": "https://codeigniter.com",
+	"license": "MIT",
+	"support": {
+		"forum": "http://forum.codeigniter.com/",
+		"wiki": "https://github.com/bcit-ci/CodeIgniter/wiki",
+		"irc": "irc://irc.freenode.net/codeigniter",
+		"source": "https://github.com/bcit-ci/CodeIgniter"
+	},
+	"require": {
+		"php": ">=5.2.4",
+        "fukuball/jieba-php": ">=0.25",
+        "jonnyw/php-phantomjs": ">=4.5.1",
+        "components/jquery": ">=3.1.1",
+        "elasticsearch/elasticsearch": ">=5.0.0",
+        "emanueleminotto/simple-html-dom": ">=1.5",
+        "hisune/echarts-php": ">=1.0.6"
+	},
+	"suggest": {
+		"paragonie/random_compat": "Provides better randomness in PHP 5.x"
+	},
+	"require-dev": {
+		"mikey179/vfsStream": "1.1.*"
+	},
+    "scripts": {
+        "post-install-cmd": [
+            "PhantomInstaller\\Installer::installPhantomJS"
+        ],
+        "post-update-cmd": [
+            "PhantomInstaller\\Installer::installPhantomJS"
+        ]
+    },
+    "config": {
+        "bin-dir": "bin"
+    }
+}

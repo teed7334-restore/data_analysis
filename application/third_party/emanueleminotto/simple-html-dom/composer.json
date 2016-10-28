@@ -1,0 +1,20 @@
+{
+    "authors": [
+        {
+            "email": "me578022@gmail.com",
+            "name": "S.C. Chen"
+        },
+        {
+            "email": "minottoemanuele@gmail.com",
+            "name": "Emanuele Minotto"
+        }
+    ],
+    "autoload": {
+        "files": [
+            "simple_html_dom.php"
+        ]
+    },
+    "description": "PHP Simple HTML DOM Parser",
+    "license": "MIT",
+    "name": "emanueleminotto/simple-html-dom"
+}
