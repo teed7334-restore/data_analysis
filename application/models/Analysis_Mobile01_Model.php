@@ -78,4 +78,18 @@ class Analysis_Mobile01_Model extends CI_Model
         $this->data_table = $this->db->count_all_results();
         return true;
     }
+
+    public function get_post_reply_num() : bool
+    {
+        $this->db->select('forums');
+        $this->db->select('COUNT(id) AS post');
+        $this->db->select_sum('reply');
+        $this->db->from($this->table);
+        $this->db->where('authur_date > ', $this->authur_date[0]);
+        $this->db->where('authur_date < ', $this->authur_date[1]);
+        $this->db->group_by('forums');
+        $this->db->order_by('forums', 'ASC');
+        $this->data_table = $this->db->get()->result_array();
+        return true;
+    }
 }

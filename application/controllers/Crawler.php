@@ -18,14 +18,30 @@ class Crawler extends CI_Controller
         include('./vendor/autoload.php');
         $this->phantomjs = Client::getInstance();
         $this->phantomjs->getEngine()->setPath(dirname(dirname(dirname(__FILE__))) . '/bin/phantomjs');
+        $this->phantomjs->isLazy();
         $this->elasticsearch = ClientBuilder::create()->build();
+        set_time_limit(0);
+        ini_set('max_execution_time', 0);
+        ini_set("memory_limit","2048M");
     }
 
-    public function getMobile01()
+    public function saveAllAnalysisMobile01Data()
     {
-        set_time_limit(0);
-        ini_set("memory_limit","2048M");
+        $this->getMobile01();
 
+        $brands = array('ACER', 'ASUS', 'SAMSUNG', 'SONY', 'XIAOMI');
+        foreach($brands as $brand)
+            $this->analysisMobile01($brand);
+    }
+
+    public function removeElasticSearchIndex()
+    {
+        $params = array('index' => 'data_analysis');
+        $this->elasticsearch->indices()->delete($params);
+    }
+
+    protected function getMobile01()
+    {
         $url = array(
             'ACER' => 'http://www.mobile01.com/topiclist.php?f=564',
             'ASUS' => 'http://www.mobile01.com/topiclist.php?f=588',
@@ -34,30 +50,44 @@ class Crawler extends CI_Controller
             'XIAOMI' => 'http://www.mobile01.com/topiclist.php?f=634'
         );
 
-        foreach($url as $company => $url) {
-            $html = $this->getContent($url);
-            $this->cache->redis->save($company, $html, 86400);
+        $this->load->model('Analysis_Mobile01_Log_Model');
+
+        foreach($url as $forums => $url) {
+
+            $data = $this->getContent($url);
+            $this->cache->redis->save($forums, $data['html'], 86400);
+
+            if(200 !== $data['status']) {
+                $this->Analysis_Mobile01_Log_Model->forums = $forums;
+                $this->Analysis_Mobile01_Log_Model->status_code = $data['status'];
+                $this->Analysis_Mobile01_Log_Model->run_at = date('Y-m-d H:i:s');
+                $this->Analysis_Mobile01_Log_Model->add();
+            }
             sleep(1);
         }
     }
 
-    public function saveAllAnalysisMobile01Data()
+    protected function getContent(string $url = '', string $method = 'GET') : array
     {
-        $brands = array('ACER', 'ASUS', 'SAMSUNG', 'SONY', 'XIAOMI');
-        foreach($brands as $brand)
-            $this->analysisMobile01($brand);
-    }
+        $data = array();
+        $timeout = 10000;
 
-    protected function getContent(string $url = '', string $method = 'GET') : string
-    {
         $request = $this->phantomjs->getMessageFactory()->createRequest($url, $method);
+        $request->setTimeout($timeout);
         $response = $this->phantomjs->getMessageFactory()->createResponse();
         $this->phantomjs->send($request, $response);
 
-        if($response->getStatus() === 200)
-            return $response->getContent();
+        $status = $response->getStatus();
+        if(200 === $status) {
+            $data['status'] = $status;
+            $data['html'] = $response->getContent();
+            return $data;
+        }
 
-        return '';
+        $data['status'] = $status;
+        $data['html'] = '';
+
+        return $data;
     }
 
     protected function analysisMobile01(string $forums = 'ACER')
@@ -66,6 +96,10 @@ class Crawler extends CI_Controller
         $expire_date = strtotime(date('Y-m-d') . ' 00:00:00') - $expire_date;
 
         $page = $this->cache->redis->get($forums);
+
+        if('' === $page)
+            return;
+
         $html = str_get_html($page);
 
         $subject = array();
