@@ -4,13 +4,16 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Analysis_Mobile01_Log_Model extends CI_Model
 {
 
+    //資料表名稱
     protected $table;
 
+    //資料表Schema
     public $id;
     public $forums;
     public $status_code;
     public $run_at;
 
+    //存取回傳資料
     public $data_table;
 
     public function __construct()
@@ -19,6 +22,10 @@ class Analysis_Mobile01_Log_Model extends CI_Model
         $this->table = 'Analysis_Mobile01_Log';
     }
 
+    /**
+     * 新增資料表
+     * @return bool
+     */
     public function add() : bool
     {
         $data = array(
