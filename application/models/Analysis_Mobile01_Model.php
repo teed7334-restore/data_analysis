@@ -115,4 +115,11 @@ class Analysis_Mobile01_Model extends CI_Model
         $this->data_table = $this->db->get()->result_array();
         return true;
     }
+
+    public function dump_all_data() : bool
+    {
+        $this->db->from($this->table);
+        $this->data_table = $this->db->get()->result_array();
+        return true;
+    }
 }
