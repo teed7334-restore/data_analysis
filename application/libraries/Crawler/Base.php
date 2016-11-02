@@ -2,13 +2,11 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 use JonnyW\PhantomJs\Client;
-use Elasticsearch\ClientBuilder;
 
 class Base {
 
     public $CI; //CI資源
     public $PhatnomJS; //PhatnomJS 物件
-    public $Elasticsearch; //Elasticsearch 物件
 
     public function __construct()
     {
