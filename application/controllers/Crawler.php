@@ -16,17 +16,16 @@ class Crawler extends CI_Controller
     public function __construct()
     {
         parent::__construct();
-        $service_name = 'Mobile01';
-        $this->load->library("Crawler/{$service_name}", null, $service_name);
-        $this->Service = &$this->{$service_name};
     }
 
     /**
      * 將所有結構化資料寫入資料庫
      * @return void
      */
-    public function run()
+    public function run(string $service_name = '')
     {
+        $this->load->library("Crawler/{$service_name}", null, $service_name);
+        $this->Service = &$this->{$service_name};
         $this->Service->saveAllAnalysisData();
     }
 }

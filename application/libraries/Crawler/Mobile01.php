@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-include('Base.php');
+include(dirname(dirname(__FILE__)) . 'Base.php');
 include(dirname(dirname((dirname(__FILE__)))) . '/interfaces/ICrawler.php');
 
 /**
