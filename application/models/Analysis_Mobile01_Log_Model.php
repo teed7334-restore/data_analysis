@@ -26,7 +26,7 @@ class Analysis_Mobile01_Log_Model extends CI_Model
      * 新增資料表
      * @return bool
      */
-    public function add() : bool
+    public function add() : string
     {
         $data = array(
             'forums' => $this->forums,
@@ -35,10 +35,10 @@ class Analysis_Mobile01_Log_Model extends CI_Model
         );
 
         if(!$this->db->insert($this->table, $data))
-            return false;
+            return '';
 
         $this->data_table = $this->db->insert_id();
 
-        return true;
+        return $this->db->last_query();
     }
 }

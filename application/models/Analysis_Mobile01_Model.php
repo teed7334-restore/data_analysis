@@ -32,7 +32,7 @@ class Analysis_Mobile01_Model extends CI_Model
      * 新增資料表
      * @return bool
      */
-    public function add() : bool
+    public function add() : string
     {
         $data = array(
             'forums' => $this->forums,
@@ -47,18 +47,18 @@ class Analysis_Mobile01_Model extends CI_Model
         );
 
         if(!$this->db->insert($this->table, $data))
-            return false;
+            return '';
 
         $this->data_table = $this->db->insert_id();
 
-        return true;
+        return $this->db->last_query();
     }
 
     /**
      * 修改己有資料
      * @return bool
      */
-    public function edit_have_data() : bool
+    public function edit_have_data() : string
     {
         $this->db->set('hot', $this->hot);
         $this->db->set('reply', $this->reply);
@@ -66,14 +66,14 @@ class Analysis_Mobile01_Model extends CI_Model
         $this->db->where('id', $this->id);
         $this->db->update($this->table);
         $this->data_table = $this->db->affected_rows();
-        return true;
+        return $this->db->last_query();
     }
 
     /**
      * 依品牌、Mobile01討論串代碼、Mobile01討論區代號取得資料
      * @return bool
      */
-    public function get_have_data() : bool
+    public function get_have_data() : string
     {
         $this->db->select('id');
         $this->db->from($this->table);
@@ -81,28 +81,28 @@ class Analysis_Mobile01_Model extends CI_Model
         $this->db->where('mobile01_forums_code', $this->mobile01_forums_code);
         $this->db->where('mobile01_thread_code', $this->mobile01_thread_code);
         $this->data_table = $this->db->get()->result_array();
-        return true;
+        return $this->db->last_query();
     }
 
     /**
      * 取得一定時間區間之品牌資料
      * @return bool [description]
      */
-    public function get_forum_post_num() : bool
+    public function get_forum_post_num() : string
     {
         $this->db->from($this->table);
         $this->db->where('authur_date > ', $this->authur_date[0]);
         $this->db->where('authur_date < ', $this->authur_date[1]);
         $this->db->where('forums', $this->forums);
         $this->data_table = $this->db->count_all_results();
-        return true;
+        return $this->db->last_query();
     }
 
     /**
      * 取得一定時間區間各品牌之發文數與回覆數
      * @return bool [description]
      */
-    public function get_post_reply_num() : bool
+    public function get_post_reply_num() : string
     {
         $this->db->select('forums');
         $this->db->select('COUNT(id) AS post');
@@ -113,13 +113,31 @@ class Analysis_Mobile01_Model extends CI_Model
         $this->db->group_by('forums');
         $this->db->order_by('forums', 'ASC');
         $this->data_table = $this->db->get()->result_array();
-        return true;
+        return $this->db->last_query();
     }
 
-    public function dump_all_data() : bool
+    /**
+     * 倒出所有資料
+     * @return bool [description]
+     */
+    public function dump_all_data() : string
     {
         $this->db->from($this->table);
         $this->data_table = $this->db->get()->result_array();
-        return true;
+        return $this->db->last_query();
+    }
+
+    /**
+     * 取得未過期資料表資料
+     * @return string [description]
+     */
+    public function get_not_expire_date_data() : string
+    {
+        $this->db->from($this->table);
+        $this->db->where('authur_date > ', $this->authur_date[0]);
+        $this->db->where('authur_date < ', $this->authur_date[1]);
+        $this->db->order_by('id', 'ASC');
+        $this->data_table = $this->db->get()->result_array();
+        return $this->db->last_query();
     }
 }

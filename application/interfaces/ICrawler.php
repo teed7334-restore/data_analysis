@@ -21,12 +21,4 @@ interface ICrawler
      * @return void
      */
     public function getWebsiteData();
-
-    /**
-     * 取得網頁資料共用元件
-     * @param  string $url    網址
-     * @param  string $method POST/GET
-     * @return array          array('status' => [HTTP訊息代碼], 'html' => [網頁HTML])
-     */
-    public function getContent(string $url = '', string $method = 'GET') : array;
 }
