@@ -16,12 +16,6 @@ class Convert extends CI_Controller
         $this->Service = &$this->{$service_name};
     }
 
-    public function test()
-    {
-        $this->load->library('Crawler/Mobile01_Detail', null, 'Mobile01_Detail');
-        $this->Mobile01_Detail->analysisWebsiteData();
-    }
-
     /**
      * 將所有資料庫資料寫去搜尋引擎
      * @return void
