@@ -23,3 +23,12 @@ http://data_analysis.local/Crawler/run/[Service Name]
 你也可將php http://data_analysis.local/Crawler/run/[Service Name]寫入到Crontab中，讓它可以定期運行
 
 如果網站資料抓失敗會寫入到Analysis_Mobile01_Log資料表中
+
+#### [About author]
+Name    : Peter Cheng
+
+Country : Taiwan
+
+EMail 1 : teed7334@gmail.com
+
+EMail 2 : teed7334@163.com
