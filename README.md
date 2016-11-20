@@ -1,6 +1,9 @@
 # data_analysis
 用PHP做資料分析演講範例程式
 
+#### [簡報網址]
+https://goo.gl/4XTCF4
+
 #### [系統環境]
 1. PHP 7
 
@@ -12,10 +15,10 @@
 
 5. 設定名為data_analysis.local的VirtualHost，並在hosts檔案中追加對應IP
 
-### [匯入Schema]
+#### [匯入Schema]
 連線資訊寫在/application/config/database.php中，資料庫的sql放在/application/schema/中
 
-### [如何使用爬蟲]
+#### [如何使用爬蟲]
 http://data_analysis.local/Crawler/run/[Service Name]
 
 其中Service Name是對應到/application/library/Crawler/下的php檔，好比Service Name = Mobile01，就是對應到Mobile01.php
