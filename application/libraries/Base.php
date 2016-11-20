@@ -1,9 +1,17 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
+set_time_limit(0); //PHP Timeout 時間無限制
+ini_set('max_execution_time', 0); //PHP 最大執行時間無限制
+ini_set("memory_limit","2048M"); //最高可用到2048MB RAM
+
 use Hisune\EchartsPHP\ECharts;
 use Elasticsearch\ClientBuilder;
 use JonnyW\PhantomJs\Client;
+use Fukuball\Jieba\Jieba;
+use Fukuball\Jieba\Finalseg;
+Jieba::init();
+Finalseg::init();
 
 class Base {
 
@@ -31,10 +39,11 @@ class Base {
         $this->PhatnomJS = Client::getInstance();
         $this->PhatnomJS->getEngine()->setPath(dirname(dirname(dirname(__FILE__))) . '/bin/phantomjs'); //PhantomJS 主程式路徑
         $this->PhatnomJS->isLazy(); //等待 HTML DOM 完全 Load 完成，且 AJAX 通通跑完
+    }
 
-        set_time_limit(0); //PHP Timeout 時間無限制
-        ini_set('max_execution_time', 0); //PHP 最大執行時間無限制
-        ini_set("memory_limit","2048M"); //最高可用到2GB RAM
+    public function jieba_cut(string $txt = '')
+    {
+        return Jieba::cut($txt);
     }
 
     /**

@@ -1,5 +1,5 @@
 <?php
-defined('BASEPATH') OR exit('No direct script access allowed');
+defined('BASEPATH') or exit('No direct script access allowed');
 
 /**
  * 顯示圖表
@@ -13,7 +13,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  */
 class Charts extends CI_Controller
 {
-
     protected $Service;
 
     public function __construct()
@@ -23,7 +22,7 @@ class Charts extends CI_Controller
         $this->load->library("Charts/{$service_name}", null, $service_name);
         $this->Service = &$this->{$service_name};
     }
-
+    
     /**
      * 顯示各品牌每週發文數與回覆數圖表
      * @return void
