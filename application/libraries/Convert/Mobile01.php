@@ -1,8 +1,8 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-include(dirname(dirname(__FILE__)) . 'Base.php');
-include(dirname(dirname((dirname(__FILE__)))) . '/interfaces/IConvert.php');
+include_once(dirname(dirname(__FILE__)) . '/Base.php');
+include_once(dirname(dirname((dirname(__FILE__)))) . '/interfaces/IConvert.php');
 
 /**
  * 處理與繪制Mobile01分析後之資料與圖表

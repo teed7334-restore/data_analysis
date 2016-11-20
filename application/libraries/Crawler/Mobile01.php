@@ -1,8 +1,8 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-include(dirname(dirname(__FILE__)) . 'Base.php');
-include(dirname(dirname((dirname(__FILE__)))) . '/interfaces/ICrawler.php');
+include_once(dirname(dirname(__FILE__)) . '/Base.php');
+include_once(dirname(dirname((dirname(__FILE__)))) . '/interfaces/ICrawler.php');
 
 /**
  * 爬取與處理Mobile01之資料

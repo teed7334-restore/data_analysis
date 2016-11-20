@@ -9,9 +9,14 @@ include_once(dirname(dirname((dirname(__FILE__)))) . '/interfaces/ICrawler.php')
  */
 class Mobile01_Detail extends Base implements ICrawler {
 
+    public $params;
+    public $forums;
+
     public function __construct()
     {
         parent::__construct();
+        $this->params = array();
+        $this->forums = array();
     }
 
     /**
@@ -20,7 +25,11 @@ class Mobile01_Detail extends Base implements ICrawler {
      */
     public function saveAllAnalysisData()
     {
+        $forums = array('ACER', 'ASUS', 'SAMSUNG', 'SONY', 'XIAOMI');
         $this->getWebsiteData();
+        foreach ($forums as $brand)
+            $this->analysisWebsiteData($brand);
+        print_r($this->forums);
     }
 
     /**
@@ -30,7 +39,32 @@ class Mobile01_Detail extends Base implements ICrawler {
      */
     public function analysisWebsiteData(string $forums = 'ACER')
     {
+        $data = $this->jieba_cut($this->params[$forums]);
+        foreach($data as $words) {
+            $words = trim($words);
+            if(2 > mb_strlen($words)) //移除少於二字元的字串
+                continue;
+            if(!isset($this->forums[$forums][$words]))
+                $this->forums[$forums][$words] = 1;
+            else
+                $this->forums[$forums][$words]++;
+        }
 
+        arsort($this->forums[$forums]); //依陣列的值由大到小排序
+
+        $swap = array();
+        $i = 0;
+
+        //只取前十筆資料
+        foreach($this->forums[$forums] as $word => $num) {
+            if(10 <= $i)
+                break;
+            $swap[$word] = $num;
+            $i++;
+        }
+
+        $this->forums[$forums] = $swap;
+        unset($swap);
     }
 
     /**
@@ -39,40 +73,18 @@ class Mobile01_Detail extends Base implements ICrawler {
      */
     public function getWebsiteData()
     {
-        $this->CI->load->model('Analysis_Mobile01_Model');
-
-        $this->CI->Analysis_Mobile01_Model->authur_date = array();
-        $this->CI->Analysis_Mobile01_Model->authur_date[] = $this->expire_date;
-        $this->CI->Analysis_Mobile01_Model->authur_date[] = $this->now;
-        $this->CI->Analysis_Mobile01_Model->get_not_expire_date_data();
-        $data = $this->CI->Analysis_Mobile01_Model->data_table;
-
-        $this->CI->load->library('Convert/Mobile01_Detail_Convert', null, 'Mobile01_Detail_Convert');
-
-        $this->CI->Mobile01_Detail_Convert->dropSchema();
-        $this->CI->Mobile01_Detail_Convert->createSchema();
-
-        foreach($data as $id => $analysis_mobile01) {
-
-            $mobile01_forums_code = $analysis_mobile01['mobile01_forums_code'];
-            $mobile01_thread_code = $analysis_mobile01['mobile01_thread_code'];
-
-            $url = "http://www.mobile01.com/topicdetail.php?f={$mobile01_forums_code}&t={$mobile01_thread_code}";
-            $forums = $this->getContent($url);
-
-            if(200 !== $forums['status']) { //當無法取回網頁資料時
-                continue;
-            }
-
-            $html = $forums['html'];
-
-            $this->CI->Mobile01_Detail_Convert->id = $id;
-            $this->CI->Mobile01_Detail_Convert->mobile01_forums_code = $mobile01_forums_code;
-            $this->CI->Mobile01_Detail_Convert->mobile01_thread_code = $mobile01_thread_code;
-            $this->CI->Mobile01_Detail_Convert->html = $html;
-            $this->CI->Mobile01_Detail_Convert->dumpDatabase2Elasticsearch();
-
-            sleep(1); //每抓一頁就休息一秒，以免抓太快被管理員封鎖
-        }
+        $this->CI->load->model('Mock_Model');
+        $acer_txt = $this->CI->Mock_Model->get_acer_txt();
+        $asus_txt = $this->CI->Mock_Model->get_asus_txt();
+        $samsung_txt = $this->CI->Mock_Model->get_samsung_txt();
+        $sony_txt = $this->CI->Mock_Model->get_sony_txt();
+        $xiaomi_txt = $this->CI->Mock_Model->get_xiaomi_txt();
+        $this->params = array(
+            'ACER' => $acer_txt,
+            'ASUS' => $asus_txt,
+            'SAMSUNG' => $samsung_txt,
+            'SONY' => $sony_txt,
+            'XIAOMI' => $xiaomi_txt
+        );
     }
 }
